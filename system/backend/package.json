@@ -1,0 +1,19 @@
+{
+  "name": "ojt-dtr-backend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "OJT-DTR Supabase backend: migrations, seed, L2 tests, operation scripts",
+  "scripts": {
+    "test": "vitest run",
+    "test:ratelimit": "vitest run --config vitest.ratelimit.config.ts",
+    "smoke": "node --env-file=.env ops/smoke-test.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0"
+  }
+}

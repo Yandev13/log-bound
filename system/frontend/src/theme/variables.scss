@@ -1,0 +1,192 @@
+/* src/theme/variables.scss
+   All colors of the app are here. Page files use var(--ion-color-...) only. */
+
+/* FONTS: Inter for titles, Poppins for body text.
+   Put these .ttf files in src/assets/fonts/ (download them from Google Fonts first):
+   Inter-SemiBold.ttf, Inter-Bold.ttf,
+   Poppins-Regular.ttf, Poppins-Medium.ttf, Poppins-SemiBold.ttf, Poppins-Bold.ttf */
+@font-face {
+  font-family: 'Inter';
+  font-weight: 600;
+  src: url('/assets/fonts/Inter-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-weight: 700;
+  src: url('/assets/fonts/Inter-Bold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-weight: 400;
+  src: url('/assets/fonts/Poppins-Regular.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-weight: 500;
+  src: url('/assets/fonts/Poppins-Medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-weight: 600;
+  src: url('/assets/fonts/Poppins-SemiBold.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Poppins';
+  font-weight: 700;
+  src: url('/assets/fonts/Poppins-Bold.ttf') format('truetype');
+}
+
+:root {
+  /* Palette
+     Navy    #171078 -> primary   (header, tab bar, titles)
+     Orange  #F58A00 -> secondary (main buttons, active tab)
+     Yellow  #FFC21A -> warning   (submitted, notes)
+     Logo blue #1440A0 -> tertiary
+     Black   #111111 -> text / dark
+     White   #FFFFFF -> background */
+
+  /* Primary: Deep Royal Navy */
+  --ion-color-primary: #171078;
+  --ion-color-primary-rgb: 23, 16, 120;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #140e6a;
+  --ion-color-primary-tint: #2e2885;
+
+  /* Secondary: Vibrant Orange */
+  --ion-color-secondary: #f58a00;
+  --ion-color-secondary-rgb: 245, 138, 0;
+  --ion-color-secondary-contrast: #ffffff;
+  --ion-color-secondary-contrast-rgb: 255, 255, 255;
+  --ion-color-secondary-shade: #d87900;
+  --ion-color-secondary-tint: #f6961a;
+
+  /* Tertiary: logo blue */
+  --ion-color-tertiary: #1440a0;
+  --ion-color-tertiary-rgb: 20, 64, 160;
+  --ion-color-tertiary-contrast: #ffffff;
+  --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+  --ion-color-tertiary-shade: #12388d;
+  --ion-color-tertiary-tint: #2b53a9;
+
+  /* Success: green (approved) */
+  --ion-color-success: #1e9e54;
+  --ion-color-success-rgb: 30, 158, 84;
+  --ion-color-success-contrast: #ffffff;
+  --ion-color-success-contrast-rgb: 255, 255, 255;
+  --ion-color-success-shade: #1a8b4a;
+  --ion-color-success-tint: #34a865;
+
+  /* Warning: Golden Yellow (submitted) - dark text so it can be read */
+  --ion-color-warning: #ffc21a;
+  --ion-color-warning-rgb: 255, 194, 26;
+  --ion-color-warning-contrast: #111111;
+  --ion-color-warning-contrast-rgb: 17, 17, 17;
+  --ion-color-warning-shade: #e0ab17;
+  --ion-color-warning-tint: #ffc831;
+
+  /* Danger: red (errors, returned) */
+  --ion-color-danger: #d6232f;
+  --ion-color-danger-rgb: 214, 35, 47;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #bc1f29;
+  --ion-color-danger-tint: #da3944;
+
+  /* Medium: gray (draft, small text) */
+  --ion-color-medium: #6b7280;
+  --ion-color-medium-rgb: 107, 114, 128;
+  --ion-color-medium-contrast: #ffffff;
+  --ion-color-medium-contrast-rgb: 255, 255, 255;
+  --ion-color-medium-shade: #5e6471;
+  --ion-color-medium-tint: #7a808d;
+
+  /* Light: card background */
+  --ion-color-light: #f3f4f8;
+  --ion-color-light-rgb: 243, 244, 248;
+  --ion-color-light-contrast: #111111;
+  --ion-color-light-contrast-rgb: 17, 17, 17;
+  --ion-color-light-shade: #d6d7da;
+  --ion-color-light-tint: #f4f5f9;
+
+  /* Dark: Black */
+  --ion-color-dark: #111111;
+  --ion-color-dark-rgb: 17, 17, 17;
+  --ion-color-dark-contrast: #ffffff;
+  --ion-color-dark-contrast-rgb: 255, 255, 255;
+  --ion-color-dark-shade: #0f0f0f;
+  --ion-color-dark-tint: #292929;
+
+  /* Page */
+  --ion-background-color: #ffffff;
+  --ion-text-color: #111111;
+  --ion-item-background: #ffffff;
+
+  /* Header bar */
+  --ion-toolbar-background: var(--ion-color-primary);
+  --ion-toolbar-color: #ffffff;
+
+  /* Bottom tab bar */
+  --ion-tab-bar-background: var(--ion-color-primary);
+  --ion-tab-bar-color: #ffffff;
+  --ion-tab-bar-color-selected: var(--ion-color-secondary);
+
+  /* Fonts */
+  --font-heading: 'Inter', sans-serif;
+  --ion-font-family: 'Poppins', sans-serif; /* body text, buttons, inputs */
+}
+
+/* ---------- Small global styles (shared by all pages) ---------- */
+
+/* Titles use Inter, everything else uses Poppins */
+h1,
+h2,
+h3,
+h4,
+ion-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+/* Floating rounded tab bar */
+ion-tab-bar {
+  margin: 0 12px 12px;
+  border-radius: 16px;
+  border: none;
+}
+
+/* Rounded buttons, no CAPITAL letters */
+ion-button {
+  --border-radius: 10px;
+  text-transform: none;
+  font-weight: 600;
+}
+
+/* Main buttons are orange (buttons with a color="" keep their own color) */
+ion-button:not([color]):not(.button-outline):not(.button-clear) {
+  --background: var(--ion-color-secondary);
+  --background-activated: var(--ion-color-secondary-shade);
+  --background-hover: var(--ion-color-secondary-tint);
+  --color: var(--ion-color-secondary-contrast);
+}
+
+/* Outline buttons use the navy color */
+ion-button.button-outline:not([color]) {
+  --border-color: var(--ion-color-primary);
+  --color: var(--ion-color-primary);
+}
+
+/* Cards are light gray, flat, and rounded */
+ion-card {
+  background: var(--ion-color-light);
+  box-shadow: none;
+  border-radius: 16px;
+  margin: 12px 0;
+}
+
+/* Input fields */
+ion-input {
+  --border-radius: 10px;
+  --border-color: var(--ion-color-medium-tint);
+  --highlight-color-focused: var(--ion-color-primary);
+}

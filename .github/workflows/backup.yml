@@ -1,0 +1,76 @@
+# Own backup (runbook, section 6): each Sunday, 02:17 Manila time (Saturday 18:17 UTC).
+# The archive is encrypted (AES-256, GPG) and kept as a release of this private repository.
+# The newest 8 backups stay. Add the prod project here when it exists (D-40).
+# Storage files: add a step when the first bucket exists (S2).
+name: backup
+
+on:
+  schedule:
+    - cron: '17 18 * * 6'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: backup
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: dev
+            db_secret: DB_URL_DEV
+    steps:
+      - uses: actions/checkout@v5
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.122.0
+
+      - name: Dump roles, schema, and data (${{ matrix.project }})
+        env:
+          DB_URL: ${{ secrets[matrix.db_secret] }}
+        run: |
+          set -euo pipefail
+          test -n "$DB_URL"
+          mkdir -p out
+          supabase db dump --db-url "$DB_URL" --role-only -f out/roles.sql
+          supabase db dump --db-url "$DB_URL" --schema public,ops -f out/schema.sql
+          supabase db dump --db-url "$DB_URL" --data-only --use-copy --schema public,ops,auth -f out/data.sql
+          {
+            echo "project=${{ matrix.project }}"
+            echo "commit=$GITHUB_SHA"
+            echo "created_utc=$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "migrations:"
+            ls system/backend/supabase/migrations
+          } > out/meta.txt
+          wc -c out/*
+
+      - name: Encrypt the archive
+        env:
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          test -n "$PASSPHRASE"
+          name="ojt-dtr-${{ matrix.project }}-$(date -u +%Y%m%d-%H%M)"
+          echo "NAME=$name" >> "$GITHUB_ENV"
+          tar -czf "$name.tar.gz" -C out .
+          printf '%s' "$PASSPHRASE" > pass.txt
+          gpg --batch --yes --pinentry-mode loopback --passphrase-file pass.txt \
+            --symmetric --cipher-algo AES256 -o "$name.tar.gz.gpg" "$name.tar.gz"
+          rm -f pass.txt "$name.tar.gz"
+          rm -rf out
+
+      - name: Upload as a release and keep the newest 8
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release create "backup-$NAME" "$NAME.tar.gz.gpg" --prerelease \
+            --title "Backup $NAME" --notes "Encrypted own backup (runbook, section 6). Commit $GITHUB_SHA."
+          gh release list --limit 100 --json tagName --jq '.[].tagName' \
+            | grep "^backup-ojt-dtr-${{ matrix.project }}-" | sort -r | tail -n +9 \
+            | while read -r tag; do gh release delete "$tag" --yes --cleanup-tag; done

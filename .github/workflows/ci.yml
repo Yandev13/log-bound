@@ -1,0 +1,54 @@
+# CI (test plan, section 9, rule 1): lint, L1, and L2 tests on each push.
+name: ci
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend lint, L1 tests, build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: system/frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: system/frontend/package-lock.json
+      - run: npm ci
+      - run: npx ng lint
+      - run: npx ng test --watch=false --coverage
+      - run: npx ng build
+
+  backend:
+    name: Backend L2 tests against dev
+    runs-on: ubuntu-latest
+    # Only one L2 run at a time. The tests share the dev project.
+    concurrency:
+      group: backend-l2-dev
+    defaults:
+      run:
+        working-directory: system/backend
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL_DEV }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY_DEV }}
+      SEED_PASSWORD: ${{ secrets.SEED_PASSWORD_DEV }}
+      KEEPALIVE_SECRET: ${{ secrets.KEEPALIVE_SECRET_DEV }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: system/backend/package-lock.json
+      - run: npm ci
+      - run: npx vitest run

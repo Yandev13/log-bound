@@ -1,0 +1,36 @@
+flowchart LR
+    subgraph MOB["Mobile app: Android (iOS optional)"]
+        direction TB
+        subgraph OJT["OJT modules"]
+            O1["DTR: time-in, time-out, history"]
+            O2["Weekly report"]
+            O3["Correction request"]
+            O4["Progress (hours)"]
+            O5["PDF export"]
+        end
+        subgraph FAC["Facilitator modules"]
+            F1["OJT list and monitoring"]
+            F2["DTR review"]
+            F3["Report review: approve / return"]
+            F4["Correction decision"]
+        end
+        subgraph SH["Shared modules"]
+            C1["Login and session"]
+            C2["Profile"]
+            C3["Notifications"]
+            C4["Offline sync: SQLite + outbox"]
+        end
+    end
+    subgraph WEB["Admin web app"]
+        direction TB
+        A1["Users"]
+        A2["Host companies"]
+        A3["Batches"]
+        A4["Assignments"]
+        A5["Dashboard"]
+        A6["Audit log"]
+        A7["CSV export"]
+    end
+    SB[("Supabase backend<br/>Auth, PostgreSQL + RLS,<br/>Storage, Edge Functions")]
+    MOB -- "sync_push / sync_pull" --> SB
+    WEB -- "Data API / Edge Functions" --> SB

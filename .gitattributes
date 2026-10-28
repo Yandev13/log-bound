@@ -1,2 +1,13 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# Keep LF line ends in git. CI runs on Linux, and gradlew is a shell script.
+* text=auto eol=lf
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jar binary
+*.docx binary
+*.pdf binary
+*.pptx binary
+*.zip binary

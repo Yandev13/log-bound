@@ -1,0 +1,33 @@
+# Keep-alive source A (runbook, section 3.2): one heartbeat each day, 09:17 Manila time (01:17 UTC).
+# Add the prod project here when it exists (D-40).
+name: keepalive
+
+on:
+  schedule:
+    - cron: '17 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: dev
+            url_secret: SUPABASE_URL_DEV
+            key_secret: SUPABASE_ANON_KEY_DEV
+            ka_secret: KEEPALIVE_SECRET_DEV
+    steps:
+      - name: Call the heartbeat function (${{ matrix.project }})
+        env:
+          URL: ${{ secrets[matrix.url_secret] }}
+          KEY: ${{ secrets[matrix.key_secret] }}
+          SECRET: ${{ secrets[matrix.ka_secret] }}
+        run: |
+          set -euo pipefail
+          body=$(jq -n --arg secret "$SECRET" '{source: "github", secret: $secret}')
+          code=$(curl -sS -o response.txt -w '%{http_code}' -X POST "$URL/rest/v1/rpc/heartbeat" \
+            -H "apikey: $KEY" -H "Content-Type: application/json" -d "$body")
+          echo "HTTP $code: $(cat response.txt)"
+          test "$code" = "200"

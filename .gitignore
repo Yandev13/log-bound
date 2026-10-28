@@ -1,0 +1,33 @@
+# Secrets. Do not commit (AGENTS.md, rule 8).
+.env
+.env.*
+!.env.example
+
+# Dependencies and build output
+node_modules/
+dist/
+www/
+.angular/
+coverage/
+system/frontend/android/app/build/
+system/frontend/android/.gradle/
+system/frontend/ios/App/Pods/
+
+# Supabase local stack
+system/backend/supabase/.branches/
+system/backend/supabase/.temp/
+
+# Backups contain personal data (runbook, section 6.2)
+*.backup
+*.dump
+backups/
+
+# Local files
+OJT-Appdev-Project.zip
+docs/deliverables/source/tc.json
+.claude/settings.local.json
+.vscode/
+.idea/
+*.log
+Thumbs.db
+.DS_Store

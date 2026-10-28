@@ -1,0 +1,31 @@
+﻿flowchart LR
+    subgraph Users
+        P1["Android phone<br/>(iPhone optional)<br/>Mobile app + SQLite"]
+        PC["PC browser<br/>Admin web app"]
+    end
+    subgraph Static["Static host (free tier)"]
+        WEB["Admin web files<br/>Netlify / Vercel / Firebase Hosting"]
+    end
+    subgraph SB["Supabase project (Free plan, Singapore region)"]
+        GW["API gateway<br/>HTTPS 443"]
+        AUTH["Auth"]
+        REST["Data API<br/>tables + RPC functions"]
+        EF["Edge Functions"]
+        ST[("Storage<br/>photos")]
+        DB[("PostgreSQL<br/>RLS")]
+        GW --> AUTH
+        GW --> REST
+        GW --> EF
+        GW --> ST
+        REST --> DB
+        EF --> DB
+        AUTH --> DB
+    end
+    FCM["Firebase Cloud Messaging"]
+    KA["Keep-alive sources<br/>GitHub Actions + cron service"]
+    P1 -->|HTTPS| GW
+    PC -->|HTTPS| WEB
+    PC -->|HTTPS| GW
+    EF -->|HTTPS| FCM
+    FCM -.->|push| P1
+    KA -->|HTTPS| GW
